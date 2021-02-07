@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>微信小程序开发：猜数字小游戏</title>
+    <meta name="keywords" content="微信小程序,微信小程序开发,小程序,微信" />
+    <meta name="description" content="" />
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/share.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/learn-text.css">
+    <!-- <link rel="stylesheet" href="../css/article.css"> -->
+    <!--[if lt IE 9]>
+  <script src="../js/modernizr.js"></script>
+  <![endif]-->
+    <!--<script src="../js/scrollReveal.js"></script>-->
+</head>
+
+<body>
+    <header>
+        <div class="title" data-scroll-reveal="enter right over 1s"><span>Nemophilist</span></div>
+        <!--<div class="logo" data-scroll-reveal="enter right over 1s"><a href="/"><img src="../images/logo.png"></a></div>-->
+        <nav class="topnav" data-scroll-reveal="enter bottom over 1s after 1s"><a
+                href="../index.html"><span>首页</span><span class="en">Home</span></a><a
+                href="../about.html"><span>关于我</span><span class="en">About</span></a><a
+                href="../manshenghuo.html"><span>慢生活</span><span class="en">Life</span></a><a
+                href="../learn.html"><span>碎言碎语</span><span class="en">Doing</span></a><a
+                href="../mbfx.html"><span>古文欣赏</span><span class="en">Enjoy</span></a><a
+                href="../learn.html"><span>学无止境</span><span class="en">Learn</span></a><a
+                href="../gbook.html"><span>留言</span><span class="en">Saying</span></a></nav>
+    </header>
+    <article>
+        <div class="container">
+            <h2 class="ctitle"><b>学无止境</b> <span>不要轻易放弃。学习成长的路上，我们长路漫漫，只因学无止境。</span></h2>
+            <div class="blog" data-scroll-reveal="enter top">
+                <div>
+                    <h1>微信小程序开发：猜数字小游戏</h1>
+                    <h2 class="author">Brayden Bao</h2>
+                    <div class="info">
+                        <!-- <img src="../images/sushi.jpg" alt="苏轼" class="author-img"> -->
+                        <div style="width: 800px;display: inline-block;margin: 5px">
+                            设计一个微信小程序，由后台生成一个0~100的随机整数，用户猜这个整数，并在输入框中输入用户猜的数字，点击提交按钮，小程序将用户输入的整数与后台生成的随机整数进行比较，并输出结果。同时输出用户提交的次数。如果用户猜不出来，点击按钮可查看答案。
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+
+                    <p><img src="../images/wxxcx-01.jpg" referrerpolicy="no-referrer" alt="wxxcx-01"></p>
+                    <h2>一、案例描述</h2>
+                    <p>设计一个微信小程序，由后台生成一个0~100的随机整数，用户猜这个整数，并在输入框中输入用户猜的数字，点击提交按钮，小程序将用户输入的整数与后台生成的随机整数进行比较，并输出结果。同时输出用户提交的次数。如果用户猜不出来，点击按钮可查看答案。
+                    </p>
+                    <h2>二、设计思路</h2>
+                    <h3>1.页面设计思路</h3>
+                    <p>由于需要用户输入数字与后台随机整数进行比较，我们可以通过输入框input组件获得用户输入。接下来通过view组件显示提示信息和输入次数。最后还要有提交按钮，即button组件。我们还可以设计一个查看答案的按钮，通过hidden命令先将答案隐藏，如果用户点击查看答案按钮则显示答案。
+                    </p>
+                    <h3>2.逻辑层设计思路</h3>
+                    <p>由于需要后台生成一个0~100的随机整数，所以我们可以在js文件中定义一个random函数，用来生成随机整数。同时，我们还需要一个函数来判断用户输入与系统随机整数大小，并输出相应的结果。在判断函数中，我们可以定义一个变量i，用来计数。
+                    </p>
+                    <h2>三、程序设计</h2>
+                    <h3>1.页面设计</h3>
+                    <p>首先通过input组件定义一个输入框来获得用户输入，代码如下：</p>
+                    <pre><code>&lt;input placeholder=&quot;请输入一个0~100的整数&quot; type=&quot;digit&quot; bindinput=&quot;num&quot;&gt;
+&lt;/input&gt;
+</code></pre>
+                    <p>接下来通过view组件获得后台提示信息和输入次数并显示</p>
+                    <pre><code>&lt;view&gt;提示信息：{{tips}}&lt;/view&gt;
+&lt;view&gt;输入次数：{{i}}&lt;/view&gt;
+</code></pre>
+                    <p>最后提交和查看答案按钮可以通过button组件实现</p>
+                    <pre><code>&lt;button bindtap=&quot;judge&quot;&gt;提交&lt;/button&gt;
+&lt;button bindtap=&quot;answer&quot;&gt;猜不出来？点我查看答案&lt;/button&gt;
+</code></pre>
+                    <p>我们可以通过view组件显示答案</p>
+                    <pre><code>&lt;view hidden=&quot;{{flag}}&quot;&gt;
+    &lt;view&gt;答案：{{rand}}&lt;/view&gt;
+&lt;/view&gt;
+</code></pre>
+                    <h3>2.逻辑层设计</h3>
+                    <p>首先通过onLoad函数生成一个0~100的随机整数，代码如下：</p>
+                    <pre><code>onLoad:function(){
+  r=parseInt(Math.random()*101);
+},
+</code></pre>
+                    <p>接下来通过input组件绑定的num函数获得用户的输入数字，代码如下：</p>
+                    <pre><code>num:function(e){
+  this.setData({
+    random:parseInt(e.detail.value)
+  })
+},
+</code></pre>
+                    <p>获得随机数和用户输入数字之后我们就可以进行判断，并输出提示信息，可以如下实现：</p>
+                    <pre><code>judge: function(){
+ i++
+ if(this.data.random == r){
+   this.setData({
+     tips:&quot;恭喜你，猜对了！&quot;
+   })
+ }else if(this.data.random &gt; r){
+   this.setData({
+     tips:&quot;你输入过大！&quot;
+   })
+ }else{
+   this.setData({
+     tips:&quot;你输入过小！&quot;
+   })
+ }
+ this.setData({
+   i:i
+ })
+},
+</code></pre>
+                    <p>我们还需要一个函数来控制答案的显示，代码如下：</p>
+                    <pre><code>answer:function(){
+  this.setData({
+    rand:r,
+    flag:false
+  })
+},
+</code></pre>
+                    <p>到这，我们的基本功能就已经实现了。</p>
+                    <h2>四、页面美化</h2>
+                    <p>基本功能实现之后，我们可以通过修改wxss文件对我们的程序进行美化。</p>
+                    <p>我们可以给页面一个背景颜色，然后让输入有一个边框，之后还可以对button按钮样式进行修改设计。</p>
+                    <p>代码如下：</p>
+                    <pre><code>page{
+  background: #f1f0f6
+} 
+input{
+  background: #fff;
+  height: 120rpx;
+  margin: 10px;
+  padding-left: 8px;
+  border: solid 1px silver
+} 
+button{
+  margin: 50rpx 0rpx;
+  background-color: red;
+  color: white;
+} 
+</code></pre>
+                    <h2>五、源代码</h2>
+                    <h3>1.js文件代码</h3>
+                    <pre><code>var rand,i=0,r,random,tips;
+Page({
+  data: {
+    flag:true,
+    random:&#39;&#39;,
+    tips:&#39;&#39;,
+    times:&#39;&#39;
+  },
+  onLoad:function(){
+    r=parseInt(Math.random()*101);
+    console.log(r)
+  },
+  num:function(e){
+   this.setData({
+    random:parseInt(e.detail.value)
+   })
+  },
+judge: function(){
+ i++
+ if(this.data.random == r){
+   this.setData({
+     tips:&quot;恭喜你，猜对了！&quot;
+   })
+}else if(this.data.random &gt; r){
+  this.setData({
+    tips:&quot;你输入过大！&quot;
+  })
+}else{
+  this.setData({
+    tips:&quot;你输入过小！&quot;
+  })
+}
+this.setData({
+  i:i
+})
+},
+answer:function(){
+  this.setData({
+    rand:r,
+    flag:false
+  })
+},
+})
+</code></pre>
+                    <h3>2.wxml文件代码</h3>
+                    <pre><code>&lt;view class=&quot;title&quot;&gt;猜数字小游戏&lt;/view&gt;
+&lt;view&gt;
+	&lt;input placeholder=&quot;请输入一个0~100的整数&quot; type=&quot;number&quot; bindinput=&quot;num&quot;&gt;&lt;/input&gt;
+&lt;/view&gt;
+&lt;view style=&quot;font-size:20px;margin:10px;&quot;&gt;提示信息：{{tips}}&lt;/view&gt;
+&lt;view style=&quot;font-size:20px;margin:10px;&quot;&gt;输入次数：{{i}}&lt;/view&gt;
+&lt;button bindtap=&quot;judge&quot; style=&quot;width:90%;&quot;&gt;判断&lt;/button&gt;
+&lt;button bindtap=&quot;answer&quot; style=&quot;width:90%;&quot;&gt;猜不出来？点我查看答案&lt;/button&gt;
+&lt;view hidden=&quot;{{flag}}&quot;&gt;
+	&lt;view style=&quot;font-size:20px;margin:10px;&quot;&gt;答案：{{rand}}&lt;/view&gt;
+&lt;/view&gt;
+</code></pre>
+                    <h3>3.wxss文件代码</h3>
+                    <pre><code>page{
+  background: #f1f0f6
+} 
+input{
+  background: #fff;
+  height: 120rpx;
+  margin: 10px;
+  padding-left: 8px;
+  border: solid 1px silver
+} 
+button{
+  margin: 50rpx 0rpx;
+  background-color: red;
+  color: white;
+} 
+</code></pre>
+                </div>
+            </div>
+        </div>
+        </aside>
+    </article>
+    <footer> Design by Nemophilist</footer>
+    <script>
+        if (!(/msie [6|7|8|9]/i.test(navigator.userAgent))) {
+            (function () {
+                window.scrollReveal = new scrollReveal({ reset: true });
+            })();
+        };
+    </script>
+</body>
+
+</html>
